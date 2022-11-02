@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: build-atlas-server
+  namespace: atlas
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: atlas-node-build
+          image: antihax/atlas-node
+          command: ["/install-server"]
+          volumeMounts:
+            - mountPath: /atlas
+              name: atlas-server-vol
+      restartPolicy: Never
+      volumes:
+      - name: atlas-server-vol
+        persistentVolumeClaim:
+          claimName: atlas-server-pvc

@@ -1,0 +1,3 @@
+[submodule "atlas-node"]
+	path = atlas-node
+	url = https://github.com/antihax/atlas-node

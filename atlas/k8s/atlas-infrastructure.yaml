@@ -1,0 +1,80 @@
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: atlas-backup
+  namespace: longhorn-system
+spec:
+  cron: "0 12 * * *"
+  task: "backup"
+  groups:
+  - atlas-backup
+  retain: 30
+  concurrency: 5
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: atlas-snapshot
+  namespace: longhorn-system
+spec:
+  cron: "0 * * * *"
+  task: "snapshot"
+  groups:
+  - atlas-snapshot
+  retain: 24
+  concurrency: 5
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: atlas-class
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "2"
+  staleReplicaTimeout: "60"
+  fromBackup: ""
+  recurringJobSelector: '[{"name":"atlas-backup", "isGroup":true}, {"name":"atlas-snapshot", "isGroup":true}]'
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: atlas-volitile-class
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "2"
+  staleReplicaTimeout: "60"
+  fromBackup: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlas-server-pvc
+  namespace: atlas
+  annotations:
+    pv.beta.kubernetes.io/gid: "1000"
+    volume.beta.kubernetes.io/mount-options: "uid=1000,gid=1000"
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: atlas-volitile-class
+  resources:
+    requests:
+      storage: 60Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlas-configuration-pvc
+  namespace: atlas
+  annotations:
+    pv.beta.kubernetes.io/gid: "1000"
+    volume.beta.kubernetes.io/mount-options: "uid=1000,gid=1000"
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: atlas-volitile-class
+  resources:
+    requests:
+      storage: 50Mi

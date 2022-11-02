@@ -1,0 +1,21 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: atlas-cfg
+  namespace: atlas
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  volumes:
+    - name: atlas-configuration-vol
+      persistentVolumeClaim:
+        claimName: atlas-configuration-pvc
+  containers:
+    - name: debugger
+      image: busybox
+      command: ["sleep", "36000"]
+      volumeMounts:
+        - mountPath: "/ServerGrid"
+          name: atlas-configuration-vol

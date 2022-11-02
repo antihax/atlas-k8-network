@@ -1,0 +1,113 @@
+{
+  "LocalS3URL": null,
+  "LocalS3AccessKeyId": null,
+  "LocalS3SecretKey": null,
+  "LocalS3BucketName": null,
+  "LocalS3Region": null,
+  "ServerGroupsAndClusterSetsScheduleBaseURL": null,
+  "ServerGroupsAndClusterSetsScheduleFilename": null,
+  "ServerGroupsAndClusterSetsScheduleS3AccessKeyId": null,
+  "ServerGroupsAndClusterSetsScheduleS3SecretKey": null,
+  "ServerGroupsAndClusterSetsScheduleS3BucketName": null,
+  "ServerGroupsAndClusterSetsScheduleS3Region": null,
+  "TribeLogConfig": {
+    "MaxRedisEntries": 1000,
+    "BackupMode": "off",
+    "MaxFileHistory": 10,
+    "HttpBackupURL": "",
+    "HttpAPIKey": "",
+    "S3URL": "",
+    "S3AccessKeyId": "",
+    "S3SecretKey": "",
+    "S3BucketName": "",
+    "S3KeyPrefix": ""
+  },
+  "SharedLogConfig": {
+    "FetchRateSec": 60,
+    "SnapshotCleanupSec": 900,
+    "SnapshotRateSec": 1800,
+    "SnapshotExpirationHours": 48,
+    "BackupMode": "off",
+    "MaxFileHistory": 10,
+    "HttpBackupURL": "",
+    "HttpAPIKey": "",
+    "S3URL": "",
+    "S3AccessKeyId": "",
+    "S3SecretKey": "",
+    "S3BucketName": "",
+    "S3KeyPrefix": ""
+  },
+  "TravelDataConfig": {
+    "BackupMode": "off",
+    "MaxFileHistory": 10,
+    "HttpBackupURL": "",
+    "HttpAPIKey": "",
+    "S3URL": "",
+    "S3AccessKeyId": "",
+    "S3SecretKey": "",
+    "S3BucketName": "",
+    "S3KeyPrefix": ""
+  },
+  "ShipBottleDataConfig": {
+    "S3Region": "",
+    "BackupMode": "off",
+    "MaxFileHistory": 10,
+    "HttpBackupURL": "",
+    "HttpAPIKey": "",
+    "S3URL": "",
+    "S3AccessKeyId": "",
+    "S3SecretKey": "",
+    "S3BucketName": "",
+    "S3KeyPrefix": ""
+  },
+  "DatabaseConnections":  
+    {
+      "Name": "Default",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    },
+    {
+      "Name": "TribeDB",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    },
+    {
+      "Name": "TravelDataDB",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    },
+    {
+      "Name": "TerritoryDB",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    },
+    {
+      "Name": "LogDB",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    },
+    {
+      "Name": "TradeDB",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    },
+    {
+      "Name": "MonumentDB",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    },
+    {
+      "Name": "FileManagerDB",
+      "URL": "atlas",
+      "Port": 6379,
+      "Password": ""
+    }
+  ]
+}

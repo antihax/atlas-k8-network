@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: a1
+  namespace: atlas
+spec:
+  selector:
+    matchLabels:
+      app: a1
+  serviceName: "a1-headless"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: a1 
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: a1
+        image: antihax/atlas-node
+        command: ["/start-server"]
+        args: ["Ocean?ServerX=0?ServerY=0?MaxPlayers=10?ReservedPlayerSlots=5?Port=5000??QueryPort=6000?SeamlessIP=127.0.0.1 -NoBattlEye -server -NoCrashDialog"]
+        ports:
+        - containerPort: 5000
+          name: game
+        - containerPort: 6000
+          name: query
+        - containerPort: 7000
+          name: seamless 
+        volumeMounts:
+        - name: atlas-server-vol
+          mountPath: /atlas
+        - name: atlas-configuration-vol
+          mountPath: /atlas/ShooterGame/ServerGrid
+        - name: save
+          mountPath: /atlas/ShooterGame/Saved
+        - name: servergrid
+          mountPath: /atlas/ShooterGame/ServerGrid.json
+          subPath: ServerGrid.json
+        - name: servergrid-serveronly
+          mountPath: /atlas/ShooterGame/ServerGrid.ServerOnly.json
+          subPath: ServerGrid.ServerOnly.json          
+      volumes:
+      - name: atlas-server-vol
+        persistentVolumeClaim:
+          claimName: atlas-server-pvc
+      - name: atlas-configuration-vol
+        persistentVolumeClaim:
+          claimName: atlas-configuration-pvc      
+      - name: servergrid
+        configMap:
+          name: servergrid-files
+          items:
+          - key: "ServerGrid.json"
+            path: "ServerGrid.json"                                
+      - name: servergrid-serveronly
+        configMap:
+          name: servergrid-files
+          items:
+          - key: "ServerGrid.ServerOnly.json"
+            path: "ServerGrid.ServerOnly.json"
+  volumeClaimTemplates:
+  - metadata:
+      name: save
+      namespace: atlas
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 50Gi
+      storageClassName: atlas-class
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: a1-headless
+  namespace: atlas
+  labels:
+    app: a1
+spec:
+  ports:
+  - port: 5000
+    name: game
+  - port: 6000
+    name: query
+  - port: 7000
+    name: seamless 
+  selector:
+    app: a1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: a1
+  namespace: atlas
+  labels:
+    app: a1
+spec:
+  ports:
+  - port: 5000
+    name: game
+  - port: 6000
+    name: query
+  - port: 7000
+    name: seamless 
+  selector:
+    app: a1
