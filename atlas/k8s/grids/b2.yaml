@@ -1,41 +1,43 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: a1
+  name: b2
   namespace: atlas
 spec:
   selector:
     matchLabels:
-      app: a1
-  serviceName: "a1-headless"
+      app: b2
+  serviceName: "b2-headless"
   replicas: 1
   template:
     metadata:
       labels:
-        app: a1 
+        app: b2 
     spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
       containers:
-      - name: a1
+      - name: b2
         image: antihax/atlas-node
         imagePullPolicy: Always
         command: ["/start-server"]
-        args: ["Ocean?ServerX=0?ServerY=0?MaxPlayers=100?ReservedPlayerSlots=5?Port=5000?QueryPort=6000 -AllowedCheatersURL=https://atlas.antihax.net/adminlist -NoBattlEye -server -NoCrashDialog -log -NOCONSOLE"]
+        args: ["Ocean?ServerX=1?ServerY=1?MaxPlayers=100?ReservedPlayerSlots=5?Port=5006?QueryPort=6006 -AllowedCheatersURL=https://atlas.antihax.net/adminlist -NoBattlEye -server -NoCrashDialog -log -NOCONSOLE"]
         env: 
           - name: WINEDLLOVERRIDES
             value: version=n,b
         ports:
-        - containerPort: 5000
+        - containerPort: 5006
           name: game
           protocol: UDP
-        - containerPort: 5001
-          name: game2
-          protocol: UDP                 
-        - containerPort: 6000
+        - containerPort: 6006
           name: query
           protocol: UDP
+        - containerPort: 5007
+          name: game2
+          protocol: UDP          
+        - containerPort: 7006
+          name: seamless 
         volumeMounts:
         - name: atlas-server-vol
           mountPath: /atlas
@@ -83,35 +85,38 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: a1-headless
+  name: b2-headless
   namespace: atlas
   labels:
-    app: a1
+    app: b2
 spec:
   ports:
   - port: 10000
     name: gamex
   selector:
-    app: a1
+    app: b2
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: a1
+  name: b2
   namespace: atlas
   labels:
-    app: a1
+    app: b2
 spec:
   type: LoadBalancer
   ports:
-  - port: 5000
+  - port: 5006
     name: game
     protocol: UDP
-  - port: 6000
+  - port: 6006
     name: query
     protocol: UDP
-  - port: 5001
+  - port: 5007
     name: game2
-    protocol: UDP
+    protocol: UDP    
+  - port: 7006
+    name: seamless 
+    protocol: TCP
   selector:
-    app: a1
+    app: b2

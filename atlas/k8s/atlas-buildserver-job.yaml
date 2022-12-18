@@ -9,10 +9,28 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
-      containers:
+      initContainers:
         - name: atlas-node-build
           image: antihax/atlas-node
           command: ["/install-server"]
+          volumeMounts:
+            - mountPath: /atlas
+              name: atlas-server-vol
+      containers:
+        - name: atlas-node-install-plugins
+          image: antihax/atlas-node
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - >-
+              echo installing plugins &&
+              wget -NP /atlas/ShooterGame/Binaries/Win64 https://github.com/antihax/ATLAS-Extract-Plugin/raw/master/dist/version.dll &&
+              wget -NP /atlas/ShooterGame/Binaries/Win64 https://github.com/antihax/ATLAS-Extract-Plugin/raw/master/dist/msdia140.dll &&
+              wget -NP /atlas/ShooterGame/Binaries/Win64 https://github.com/antihax/ATLAS-Extract-Plugin/raw/master/dist/config.json &&
+              mkdir -p /atlas/ShooterGame/Binaries/Win64/AtlasApi/Plugins/MyNoSeamless &&
+              wget -NP /atlas/ShooterGame/Binaries/Win64/AtlasApi/Plugins/MyNoSeamless https://github.com/antihax/ATLAS-Extract-Plugin/raw/master/dist/MyNoSeamless/MyNoSeamless.dll &&
+              chmod 755 /atlas/ShooterGame/Binaries/Win64/*.dll &&
+              echo done
           volumeMounts:
             - mountPath: /atlas
               name: atlas-server-vol
@@ -21,3 +39,5 @@ spec:
       - name: atlas-server-vol
         persistentVolumeClaim:
           claimName: atlas-server-pvc
+
+    
